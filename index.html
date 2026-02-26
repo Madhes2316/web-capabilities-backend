@@ -3,7 +3,6 @@
 <head>
   <title>Character Finder</title>
 
-  <!-- Mobile support -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -100,7 +99,8 @@
 
 <h2>🎬 Which Tamil Movie Character Are You? 🔥</h2>
 
-<button onclick="startCamera()">🚀 Check Character</button>
+<!-- Camera Button -->
+<button id="cameraBtn" onclick="startCamera()">Enable Camera</button>
 
 <div class="container">
 
@@ -137,14 +137,27 @@ const images = [
 
 let scrollInterval;
 
+// Auto try camera on load
+document.addEventListener("DOMContentLoaded", () => {
+  startCamera();
+});
+
 // Start camera
 async function startCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     document.getElementById("video").srcObject = stream;
+
+    // Hide button smoothly
+    const btn = document.getElementById("cameraBtn");
+    btn.style.opacity = "0";
+    setTimeout(() => {
+      btn.style.display = "none";
+    }, 300);
+
     startScrolling();
   } catch (err) {
-    alert("Camera permission denied");
+    console.log("Camera blocked, user must click button");
   }
 }
 
@@ -172,7 +185,6 @@ function capture() {
   const randomIndex = Math.floor(Math.random() * images.length);
   const selected = images[randomIndex];
 
-  // Show result after small delay (cool effect)
   setTimeout(() => {
     document.getElementById("heroImage").src = selected.url;
     document.getElementById("result").innerText = "You are: " + selected.name;
